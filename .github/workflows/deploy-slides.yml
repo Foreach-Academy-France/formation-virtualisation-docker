@@ -31,7 +31,7 @@ jobs:
       - name: Install Pandoc
         run: |
           sudo apt-get update
-          sudo apt-get install -y pandoc texlive-latex-base texlive-fonts-recommended texlive-latex-extra
+          sudo apt-get install -y pandoc texlive-xetex texlive-fonts-recommended fonts-noto-color-emoji
 
       - name: Create output directories
         run: |
@@ -62,10 +62,11 @@ jobs:
               echo "Generating PDF for $tp_name..."
               pandoc "$tp_dir/README.md" \
                 -o "public/tp-pdf/${tp_name}.pdf" \
-                --pdf-engine=pdflatex \
+                --pdf-engine=xelatex \
                 -V geometry:margin=2cm \
                 -V documentclass=article \
                 -V fontsize=11pt \
+                -V mainfont="DejaVu Sans" \
                 --toc \
                 --highlight-style=tango
             fi
