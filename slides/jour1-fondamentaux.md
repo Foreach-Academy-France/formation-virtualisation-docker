@@ -119,12 +119,12 @@ IEF2I / Digital School of Paris
 
 **"It works on my machine!"** 😱
 
-```
-Développeur A (Node 16) → ✅ Fonctionne
-Développeur B (Node 18) → ❌ Crash
-Serveur staging        → ⚠️  Comportement différent
-Production             → 💥 NE FONCTIONNE PAS
-```
+**Le parcours du combattant** :
+
+- ✅ **Développeur A** (Node 16) → Fonctionne
+- ❌ **Développeur B** (Node 18) → Crash
+- ⚠️ **Serveur staging** → Comportement différent
+- 💥 **Production** → NE FONCTIONNE PAS
 
 **Causes** :
 - Versions de dépendances différentes
@@ -137,16 +137,12 @@ Production             → 💥 NE FONCTIONNE PAS
 
 **Docker** = Empaqueter application + dépendances dans un **conteneur**
 
-```
-┌──────────────────────────┐
-│   Application            │
-│   + Node.js 18           │
-│   + npm packages         │
-│   + Configuration        │
-│   + Variables d'env      │
-└──────────────────────────┘
-     = Conteneur Docker
-```
+**Un conteneur inclut** :
+- 📦 Application
+- ⚙️ Node.js 18
+- 📚 npm packages
+- 🔧 Configuration
+- 🌍 Variables d'environnement
 
 **Promesse** : "Si ça fonctionne dans un conteneur, <span class="highlight">ça fonctionnera partout</span>"
 
@@ -206,10 +202,9 @@ Production             → 💥 NE FONCTIONNE PAS
 ## Cas d'usage (suite)
 
 **4. Multi-environnements** 🌍
-```
+
 Dev → Staging → Production
-(même image Docker partout)
-```
+**(même image Docker partout)**
 
 **5. Isolation d'applications** 🔒
 ```bash
@@ -330,19 +325,12 @@ ps aux
 
 **Images Docker** = Empilement de **layers** (couches)
 
-```
-┌────────────────────────────────┐
-│  Container Layer (Read-Write) │ ← Modifications
-├────────────────────────────────┤
-│  Layer 4: COPY index.html      │
-├────────────────────────────────┤
-│  Layer 3: RUN apt install      │
-├────────────────────────────────┤
-│  Layer 2: RUN apt-get update   │
-├────────────────────────────────┤
-│  Layer 1: FROM ubuntu:22.04    │ ← Base
-└────────────────────────────────┘
-```
+**Structure** :
+- 🔴 **Container Layer** (Read-Write) → Modifications runtime
+- 🔵 **Layer 4** : COPY index.html
+- 🔵 **Layer 3** : RUN apt install nginx
+- 🔵 **Layer 2** : RUN apt-get update
+- 🔵 **Layer 1** : FROM ubuntu:22.04 (Base)
 
 **Avantages** : Réutilisation, économie d'espace
 
@@ -352,11 +340,10 @@ ps aux
 
 **Principe** : Fichiers copiés uniquement si modifiés
 
-```
-1. Lecture → Depuis le layer le plus haut
-2. Modification → Copie dans container layer
-3. Suppression → Fichier "whiteout"
-```
+**Comportement** :
+1. 📖 **Lecture** → Depuis le layer le plus haut
+2. ✏️ **Modification** → Copie dans container layer
+3. 🗑️ **Suppression** → Fichier "whiteout"
 
 **Bénéfices** :
 - 💾 Économie d'espace (layers partagés)
@@ -366,45 +353,34 @@ ps aux
 
 ## Architecture Docker
 
-```
-┌──────────────┐
-│  Docker CLI  │ ← Interface utilisateur
-└──────┬───────┘
-       │ REST API
-┌──────▼────────────────┐
-│  Docker Daemon        │
-│  ┌─────────────────┐  │
-│  │  containerd     │  │ ← Runtime haut niveau
-│  └────────┬────────┘  │
-│  ┌────────▼────────┐  │
-│  │  runc (OCI)     │  │ ← Runtime bas niveau
-│  └─────────────────┘  │
-└───────────────────────┘
-         │
-    ┌────▼────┐
-    │Container│
-    └─────────┘
-```
+<div class="mermaid">
+graph TD
+    CLI[Docker CLI<br/>Interface utilisateur]
+    CLI -->|REST API| Daemon[Docker Daemon]
+    Daemon --> containerd[containerd<br/>Runtime haut niveau]
+    containerd --> runc[runc OCI<br/>Runtime bas niveau]
+    runc --> Container[Container]
+
+    style CLI fill:#3b82f6,color:#fff
+    style Daemon fill:#2563eb,color:#fff
+    style containerd fill:#1e40af,color:#fff
+    style runc fill:#1e3a8a,color:#fff
+    style Container fill:#10b981,color:#fff
+</div>
 
 ---
 
 ## Flow : `docker run nginx`
 
-```
-1. docker run nginx
-         ↓
-2. Docker CLI → REST API → Daemon
-         ↓
-3. Daemon vérifie si image existe
-         ↓
-4. Si non, pull depuis Docker Hub
-         ↓
-5. Daemon → containerd → runc
-         ↓
-6. runc configure namespaces, cgroups
-         ↓
-7. Conteneur démarre (nginx = PID 1)
-```
+**Séquence d'exécution** :
+
+1. 💻 `docker run nginx`
+2. 🔄 Docker CLI → REST API → Daemon
+3. 🔍 Daemon vérifie si image existe
+4. 📥 Si non, pull depuis Docker Hub
+5. ⚙️ Daemon → containerd → runc
+6. 🔧 runc configure namespaces, cgroups
+7. ✅ Conteneur démarre (nginx = PID 1)
 
 ---
 
