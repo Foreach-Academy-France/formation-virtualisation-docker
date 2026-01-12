@@ -43,3 +43,7 @@ coverage
 dist
 build
 tmp
+
+# Ne pas inclure les autres versions de la démo
+basic/
+multi-stage/

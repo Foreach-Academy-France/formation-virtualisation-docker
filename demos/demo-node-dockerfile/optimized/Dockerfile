@@ -1,4 +1,6 @@
 # Dockerfile optimisé - Best practices appliquées
+# Build depuis le répertoire demo-node-dockerfile/ avec:
+# docker build -f optimized/Dockerfile -t my-api:optimized .
 
 FROM node:18-alpine
 
@@ -7,24 +9,25 @@ LABEL maintainer="formation@ief2i.fr"
 LABEL version="1.0.0"
 LABEL description="Demo Express API avec Docker best practices"
 
-# Créer un utilisateur non-root
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+# Utiliser l'utilisateur node fourni par l'image Node.js officielle
+# Cet utilisateur existe déjà et évite les problèmes de permissions
 
 # Définir le répertoire de travail
 WORKDIR /app
 
 # Copier les fichiers de dépendances
-COPY ../app/package*.json ./
+COPY app/package*.json ./
 
 # Installer les dépendances en production avec npm ci
 RUN npm ci --only=production && \
     npm cache clean --force
 
-# Copier le code source avec les bonnes permissions
-COPY --chown=appuser:appgroup ../app/src ./src
+# Copier le code source
+COPY app/src ./src
 
 # Changer d'utilisateur (non-root)
-USER appuser
+# Note: L'utilisateur 'node' est fourni par l'image Node.js officielle
+USER node
 
 # Exposer le port
 EXPOSE 3000
