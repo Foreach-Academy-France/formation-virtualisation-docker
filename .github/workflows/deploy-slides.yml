@@ -352,31 +352,43 @@ jobs:
                       <h2>🎬 Démos</h2>
                       <div class="grid">
                           <div class="card">
-                              <h3>🐳 Docker Basics</h3>
-                              <p>Premier conteneur, commandes essentielles</p>
+                              <h3>🐳 Dockeriser une App Node.js</h3>
+                              <p>De zéro à une image optimisée : Dockerfile basique → optimisé avec best practices</p>
                               <div class="links">
-                                  <a href="demos/demo-basics/README.md" class="btn">💻 Code</a>
+                                  <a href="demos/demo-node-dockerfile/README.md" class="btn">📖 Documentation</a>
+                                  <a href="demos/demo-node-dockerfile/app/src/server.js" class="btn btn-secondary">💻 Code Source</a>
                               </div>
+                              <p style="margin-top: 1rem; font-size: 0.85rem; color: #666;">
+                                  <strong>Inclus :</strong> Scripts de démo automatique (demo.sh) et validation (validate.sh)
+                              </p>
                           </div>
                           <div class="card">
-                              <h3>🏗️ Multi-Stage Build</h3>
-                              <p>Optimisation des images Docker</p>
+                              <h3>📊 Scripts de Démo</h3>
+                              <p>Scripts Bash interactifs pour présenter Docker en live</p>
                               <div class="links">
-                                  <a href="demos/demo-multi-stage/README.md" class="btn">💻 Code</a>
+                                  <a href="demos/demo-node-dockerfile/demo.sh" class="btn">▶️ demo.sh (20 min)</a>
+                                  <a href="demos/demo-node-dockerfile/validate.sh" class="btn btn-secondary">✓ validate.sh (15 tests)</a>
                               </div>
+                              <p style="margin-top: 1rem; font-size: 0.85rem; color: #666;">
+                                  <strong>Démo interactive :</strong> Build, run, test avec explications étape par étape
+                              </p>
                           </div>
                           <div class="card">
-                              <h3>🐙 Docker Compose</h3>
-                              <p>Stack applicative complète</p>
+                              <h3>🔧 Dockerfiles Comparés</h3>
+                              <p>Versions basique vs optimisée pour comprendre les best practices</p>
                               <div class="links">
-                                  <a href="demos/demo-compose/README.md" class="btn">💻 Code</a>
+                                  <a href="demos/demo-node-dockerfile/basic/Dockerfile" class="btn">📄 Basic</a>
+                                  <a href="demos/demo-node-dockerfile/optimized/Dockerfile" class="btn btn-secondary">⚡ Optimized</a>
                               </div>
+                              <p style="margin-top: 1rem; font-size: 0.85rem; color: #666;">
+                                  <strong>Compare :</strong> npm install vs npm ci, root vs non-root, avec/sans health check
+                              </p>
                           </div>
                           <div class="card">
-                              <h3>📦 Registry Privé</h3>
-                              <p>Push/Pull vers registry local</p>
+                              <h3>📦 Plus de démos à venir...</h3>
+                              <p>Docker Compose, Registry privé, Multi-stage avancé</p>
                               <div class="links">
-                                  <a href="demos/demo-registry/README.md" class="btn">💻 Code</a>
+                                  <a href="demos/README.md" class="btn">🔜 Bientôt disponible</a>
                               </div>
                           </div>
                       </div>
