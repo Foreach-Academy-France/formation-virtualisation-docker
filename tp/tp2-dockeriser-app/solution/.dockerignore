@@ -1,0 +1,70 @@
+# Node modules
+# Seront réinstallés dans le conteneur via npm ci
+node_modules
+npm-debug.log
+yarn-error.log
+yarn.lock
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Editor files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
+
+# Documentation
+README.md
+*.md
+docs/
+LICENSE
+
+# Tests
+test
+tests
+__tests__
+**/*.test.js
+**/*.spec.js
+coverage
+.nyc_output
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+.circleci
+azure-pipelines.yml
+
+# Build artifacts
+dist
+build
+tmp
+temp
+.cache
+
+# Logs
+logs
+*.log
+
+# Docker files (évite la récursion)
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Misc
+.npm
+.eslintcache
+.prettierignore
