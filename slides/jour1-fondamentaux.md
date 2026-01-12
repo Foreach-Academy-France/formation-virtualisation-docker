@@ -354,19 +354,15 @@ ps aux
 ## Architecture Docker
 
 <div class="mermaid">
-graph TD
+flowchart TD
     CLI[Docker CLI<br/>Interface utilisateur]
     CLI -->|REST API| Daemon[Docker Daemon]
     Daemon --> containerd[containerd<br/>Runtime haut niveau]
     containerd --> runc[runc OCI<br/>Runtime bas niveau]
     runc --> Container[Container]
-
-    style CLI fill:#3b82f6,color:#fff
-    style Daemon fill:#2563eb,color:#fff
-    style containerd fill:#1e40af,color:#fff
-    style runc fill:#1e3a8a,color:#fff
-    style Container fill:#10b981,color:#fff
 </div>
+
+**Stack** : CLI → Daemon → containerd → runc → Container
 
 ---
 
