@@ -1,0 +1,399 @@
+name: Deploy Slides to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:  # Allow manual trigger
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Slides
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Install Marp CLI
+        run: bun add -g @marp-team/marp-cli
+
+      - name: Create output directories
+        run: |
+          mkdir -p public/slides
+          mkdir -p public/pdf
+
+      - name: Build HTML slides
+        run: |
+          for slide in slides/*.md; do
+            echo "Building $(basename $slide)..."
+            marp "$slide" --html --allow-local-files -o "public/slides/$(basename $slide .md).html"
+          done
+
+      - name: Build PDF slides
+        run: |
+          for slide in slides/*.md; do
+            echo "Building PDF for $(basename $slide)..."
+            marp "$slide" --html --allow-local-files --pdf -o "public/pdf/$(basename $slide .md).pdf"
+          done
+
+      - name: Copy additional files
+        run: |
+          # Copy TP and evaluation folders
+          cp -r tp public/
+          cp -r demos public/
+          cp -r evaluation public/
+
+          # Copy README
+          cp README.md public/
+
+      - name: Create index.html
+        run: |
+          cat > public/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="fr">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Formation Docker & Virtualisation - IEF2I</title>
+              <style>
+                  * {
+                      margin: 0;
+                      padding: 0;
+                      box-sizing: border-box;
+                  }
+                  body {
+                      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                      line-height: 1.6;
+                      color: #333;
+                      background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+                      min-height: 100vh;
+                      padding: 2rem;
+                  }
+                  .container {
+                      max-width: 1200px;
+                      margin: 0 auto;
+                      background: white;
+                      border-radius: 20px;
+                      padding: 3rem;
+                      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                  }
+                  header {
+                      text-align: center;
+                      margin-bottom: 3rem;
+                      padding-bottom: 2rem;
+                      border-bottom: 3px solid #2563eb;
+                  }
+                  h1 {
+                      color: #2563eb;
+                      font-size: 2.5rem;
+                      margin-bottom: 0.5rem;
+                  }
+                  .docker-icon {
+                      font-size: 3rem;
+                      margin-bottom: 1rem;
+                  }
+                  .subtitle {
+                      color: #666;
+                      font-size: 1.2rem;
+                  }
+                  .info {
+                      background: #f7f7f7;
+                      padding: 1.5rem;
+                      border-radius: 10px;
+                      margin: 2rem 0;
+                  }
+                  .info p {
+                      margin: 0.5rem 0;
+                  }
+                  .section {
+                      margin: 2rem 0;
+                  }
+                  .section h2 {
+                      color: #1e40af;
+                      margin-bottom: 1rem;
+                      font-size: 1.8rem;
+                  }
+                  .grid {
+                      display: grid;
+                      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                      gap: 1.5rem;
+                      margin-top: 1rem;
+                  }
+                  .card {
+                      background: #fff;
+                      border: 2px solid #e0e0e0;
+                      border-radius: 10px;
+                      padding: 1.5rem;
+                      transition: all 0.3s ease;
+                  }
+                  .card:hover {
+                      border-color: #2563eb;
+                      transform: translateY(-5px);
+                      box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2);
+                  }
+                  .card h3 {
+                      color: #2563eb;
+                      margin-bottom: 0.5rem;
+                  }
+                  .card p {
+                      color: #666;
+                      font-size: 0.9rem;
+                      margin-bottom: 1rem;
+                  }
+                  .links {
+                      display: flex;
+                      gap: 0.5rem;
+                      flex-wrap: wrap;
+                  }
+                  .btn {
+                      display: inline-block;
+                      padding: 0.5rem 1rem;
+                      background: #2563eb;
+                      color: white;
+                      text-decoration: none;
+                      border-radius: 5px;
+                      font-size: 0.9rem;
+                      transition: background 0.3s ease;
+                  }
+                  .btn:hover {
+                      background: #1e40af;
+                  }
+                  .btn-secondary {
+                      background: #48bb78;
+                  }
+                  .btn-secondary:hover {
+                      background: #38a169;
+                  }
+                  .btn-pdf {
+                      background: #e53e3e;
+                  }
+                  .btn-pdf:hover {
+                      background: #c53030;
+                  }
+                  footer {
+                      text-align: center;
+                      margin-top: 3rem;
+                      padding-top: 2rem;
+                      border-top: 2px solid #e0e0e0;
+                      color: #666;
+                  }
+                  .badge {
+                      display: inline-block;
+                      padding: 0.25rem 0.75rem;
+                      background: #48bb78;
+                      color: white;
+                      border-radius: 20px;
+                      font-size: 0.8rem;
+                      margin-left: 0.5rem;
+                  }
+                  .day-separator {
+                      background: linear-gradient(90deg, #2563eb 0%, #1e40af 100%);
+                      color: white;
+                      padding: 1rem;
+                      border-radius: 10px;
+                      margin: 2rem 0;
+                      text-align: center;
+                      font-size: 1.3rem;
+                      font-weight: bold;
+                  }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <header>
+                      <div class="docker-icon">🐳</div>
+                      <h1>Formation Virtualisation et Conteneurisation avec Docker</h1>
+                      <p class="subtitle">IEF2I / Digital School of Paris - M2 ESTD Architecte Web</p>
+                  </header>
+
+                  <div class="info">
+                      <p><strong>📅 Durée:</strong> 5 jours (35 heures)</p>
+                      <p><strong>👨‍🏫 Référent:</strong> Michael MAVRODIS</p>
+                      <p><strong>🎯 Objectif:</strong> Maîtriser Docker et la conteneurisation en environnement production</p>
+                  </div>
+
+                  <div class="section">
+                      <div class="day-separator">📅 Jour 1 - Fondamentaux</div>
+                      <div class="grid">
+                          <div class="card">
+                              <h3>Jour 1: Fondamentaux Docker</h3>
+                              <p>Présentation • Principes & Architectures • Écosystème Docker</p>
+                              <div class="links">
+                                  <a href="slides/jour1-fondamentaux.html" class="btn">🖥️ Slides HTML</a>
+                                  <a href="pdf/jour1-fondamentaux.pdf" class="btn btn-pdf">📄 PDF</a>
+                                  <a href="tp/tp1-decouverte-docker/README.md" class="btn btn-secondary">📝 TP1</a>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="section">
+                      <div class="day-separator">📅 Jour 2 - Installation et Images</div>
+                      <div class="grid">
+                          <div class="card">
+                              <h3>Jour 2: Installation & Images</h3>
+                              <p>Installation • Dockerfile • Multi-stage builds • .dockerignore</p>
+                              <div class="links">
+                                  <a href="slides/jour2-images.html" class="btn">🖥️ Slides HTML</a>
+                                  <a href="pdf/jour2-images.pdf" class="btn btn-pdf">📄 PDF</a>
+                                  <a href="tp/tp2-dockeriser-app/README.md" class="btn btn-secondary">📝 TP2</a>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="section">
+                      <div class="day-separator">📅 Jour 3 - Gestion et Persistance</div>
+                      <div class="grid">
+                          <div class="card">
+                              <h3>Jour 3: Gestion & Volumes</h3>
+                              <p>Commandes • Networking • Volumes • Persistance des données</p>
+                              <div class="links">
+                                  <a href="slides/jour3-gestion-volumes.html" class="btn">🖥️ Slides HTML</a>
+                                  <a href="pdf/jour3-gestion-volumes.pdf" class="btn btn-pdf">📄 PDF</a>
+                                  <a href="tp/tp3-stack-app/README.md" class="btn btn-secondary">📝 TP3</a>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="section">
+                      <div class="day-separator">📅 Jour 4 - Registry et Compose</div>
+                      <div class="grid">
+                          <div class="card">
+                              <h3>Jour 4: Registry & Compose</h3>
+                              <p>Registry privé • Docker Compose • Applications multi-conteneurs</p>
+                              <div class="links">
+                                  <a href="slides/jour4-registry-compose.html" class="btn">🖥️ Slides HTML</a>
+                                  <a href="pdf/jour4-registry-compose.pdf" class="btn btn-pdf">📄 PDF</a>
+                                  <a href="tp/tp4-compose-avance/README.md" class="btn btn-secondary">📝 TP4</a>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="section">
+                      <div class="day-separator">📅 Jour 5 - Production et Projet</div>
+                      <div class="grid">
+                          <div class="card">
+                              <h3>Jour 5: Production & Projet</h3>
+                              <p>Sécurité • Best practices • Projet fil rouge • QCM</p>
+                              <div class="links">
+                                  <a href="slides/jour5-production-projet.html" class="btn">🖥️ Slides HTML</a>
+                                  <a href="pdf/jour5-production-projet.pdf" class="btn btn-pdf">📄 PDF</a>
+                                  <a href="tp/tp5-projet-final/README.md" class="btn btn-secondary">📝 Projet Final</a>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="section">
+                      <h2>📝 Évaluation</h2>
+                      <div class="grid">
+                          <div class="card">
+                              <h3>Contrôle Continu (50%)</h3>
+                              <p>5 TPs notés + Projet fil rouge</p>
+                              <div class="links">
+                                  <a href="evaluation/README.md" class="btn">📊 Détails</a>
+                              </div>
+                          </div>
+                          <div class="card">
+                              <h3>QCM Final (50%)</h3>
+                              <p>30 questions - 45 minutes</p>
+                              <div class="links">
+                                  <a href="evaluation/qcm.md" class="btn">📋 QCM</a>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="section">
+                      <h2>🎬 Démos</h2>
+                      <div class="grid">
+                          <div class="card">
+                              <h3>🐳 Docker Basics</h3>
+                              <p>Premier conteneur, commandes essentielles</p>
+                              <div class="links">
+                                  <a href="demos/demo-basics/README.md" class="btn">💻 Code</a>
+                              </div>
+                          </div>
+                          <div class="card">
+                              <h3>🏗️ Multi-Stage Build</h3>
+                              <p>Optimisation des images Docker</p>
+                              <div class="links">
+                                  <a href="demos/demo-multi-stage/README.md" class="btn">💻 Code</a>
+                              </div>
+                          </div>
+                          <div class="card">
+                              <h3>🐙 Docker Compose</h3>
+                              <p>Stack applicative complète</p>
+                              <div class="links">
+                                  <a href="demos/demo-compose/README.md" class="btn">💻 Code</a>
+                              </div>
+                          </div>
+                          <div class="card">
+                              <h3>📦 Registry Privé</h3>
+                              <p>Push/Pull vers registry local</p>
+                              <div class="links">
+                                  <a href="demos/demo-registry/README.md" class="btn">💻 Code</a>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="section">
+                      <h2>🛠️ Prérequis</h2>
+                      <ul style="list-style-position: inside; margin-left: 1rem;">
+                          <li>Linux (Debian/Ubuntu recommandé) ou Docker Desktop (macOS/Windows)</li>
+                          <li>8 GB RAM minimum (16 GB recommandé)</li>
+                          <li>20 GB d'espace disque libre</li>
+                          <li>Droits sudo/admin pour installation</li>
+                          <li>Compte Docker Hub (gratuit)</li>
+                          <li>VS Code ou éditeur de code</li>
+                      </ul>
+                  </div>
+
+                  <footer>
+                      <p><strong>IEF2I / Digital School of Paris</strong></p>
+                      <p>Référent: Michael MAVRODIS | michaelmavrodis@formateur.ief2i.fr</p>
+                      <p style="margin-top: 1rem; font-size: 0.9rem; color: #999;">
+                          🤖 Site généré automatiquement avec GitHub Actions et Marp CLI
+                      </p>
+                  </footer>
+              </div>
+          </body>
+          </html>
+          EOF
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        with:
+          enablement: true
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './public'
+
+  deploy:
+    name: Deploy to GitHub Pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

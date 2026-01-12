@@ -1,0 +1,33 @@
+{
+  "name": "formation-docker-virtualisation",
+  "version": "1.0.0",
+  "description": "Formation de 5 jours sur Docker et la conteneurisation - M2 ESTD",
+  "type": "module",
+  "scripts": {
+    "slides": "marp slides/ -o dist/slides --html --theme-set ./theme.css",
+    "slides:watch": "marp slides/ -o dist/slides --html --theme-set ./theme.css --watch",
+    "slides:pdf": "marp slides/ -o dist/pdf --pdf --html --theme-set ./theme.css --allow-local-files",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "build": "npm run slides && npm run docs:build",
+    "dev": "npm run slides:watch & npm run docs:dev"
+  },
+  "keywords": [
+    "docker",
+    "conteneurisation",
+    "virtualisation",
+    "devops",
+    "formation"
+  ],
+  "author": "Fabrice Claeys",
+  "license": "MIT",
+  "devDependencies": {
+    "@marp-team/marp-cli": "^3.4.0",
+    "vitepress": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "bun": ">=1.0.0"
+  }
+}
