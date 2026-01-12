@@ -28,10 +28,16 @@ jobs:
       - name: Install Marp CLI
         run: bun add -g @marp-team/marp-cli
 
+      - name: Install Pandoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-latex-base texlive-fonts-recommended texlive-latex-extra
+
       - name: Create output directories
         run: |
           mkdir -p public/slides
           mkdir -p public/pdf
+          mkdir -p public/tp-pdf
 
       - name: Build HTML slides
         run: |
@@ -45,6 +51,24 @@ jobs:
           for slide in slides/*.md; do
             echo "Building PDF for $(basename $slide)..."
             marp "$slide" --html --allow-local-files --pdf -o "public/pdf/$(basename $slide .md).pdf"
+          done
+
+      - name: Build TP PDFs
+        run: |
+          # Generate PDF for each TP README
+          for tp_dir in tp/tp*/; do
+            if [ -f "$tp_dir/README.md" ]; then
+              tp_name=$(basename "$tp_dir")
+              echo "Generating PDF for $tp_name..."
+              pandoc "$tp_dir/README.md" \
+                -o "public/tp-pdf/${tp_name}.pdf" \
+                --pdf-engine=pdflatex \
+                -V geometry:margin=2cm \
+                -V documentclass=article \
+                -V fontsize=11pt \
+                --toc \
+                --highlight-style=tango
+            fi
           done
 
       - name: Copy additional files
@@ -231,8 +255,9 @@ jobs:
                               <p>Présentation • Principes & Architectures • Écosystème Docker</p>
                               <div class="links">
                                   <a href="slides/jour1-fondamentaux.html" class="btn">🖥️ Slides HTML</a>
-                                  <a href="pdf/jour1-fondamentaux.pdf" class="btn btn-pdf">📄 PDF</a>
-                                  <a href="tp/tp1-decouverte-docker/README.md" class="btn btn-secondary">📝 TP1</a>
+                                  <a href="pdf/jour1-fondamentaux.pdf" class="btn btn-pdf">📄 PDF Slides</a>
+                                  <a href="tp/tp1-decouverte-docker/README.md" class="btn btn-secondary">📝 TP1 Web</a>
+                                  <a href="tp-pdf/tp1-decouverte-docker.pdf" class="btn btn-pdf">📥 TP1 PDF</a>
                               </div>
                           </div>
                       </div>
@@ -246,8 +271,9 @@ jobs:
                               <p>Installation • Dockerfile • Multi-stage builds • .dockerignore</p>
                               <div class="links">
                                   <a href="slides/jour2-images.html" class="btn">🖥️ Slides HTML</a>
-                                  <a href="pdf/jour2-images.pdf" class="btn btn-pdf">📄 PDF</a>
-                                  <a href="tp/tp2-dockeriser-app/README.md" class="btn btn-secondary">📝 TP2</a>
+                                  <a href="pdf/jour2-images.pdf" class="btn btn-pdf">📄 PDF Slides</a>
+                                  <a href="tp/tp2-dockeriser-app/README.md" class="btn btn-secondary">📝 TP2 Web</a>
+                                  <a href="tp-pdf/tp2-dockeriser-app.pdf" class="btn btn-pdf">📥 TP2 PDF</a>
                               </div>
                           </div>
                       </div>
@@ -261,8 +287,9 @@ jobs:
                               <p>Commandes • Networking • Volumes • Persistance des données</p>
                               <div class="links">
                                   <a href="slides/jour3-gestion-volumes.html" class="btn">🖥️ Slides HTML</a>
-                                  <a href="pdf/jour3-gestion-volumes.pdf" class="btn btn-pdf">📄 PDF</a>
-                                  <a href="tp/tp3-stack-app/README.md" class="btn btn-secondary">📝 TP3</a>
+                                  <a href="pdf/jour3-gestion-volumes.pdf" class="btn btn-pdf">📄 PDF Slides</a>
+                                  <a href="tp/tp3-stack-app/README.md" class="btn btn-secondary">📝 TP3 Web</a>
+                                  <a href="tp-pdf/tp3-stack-app.pdf" class="btn btn-pdf">📥 TP3 PDF</a>
                               </div>
                           </div>
                       </div>
@@ -276,8 +303,9 @@ jobs:
                               <p>Registry privé • Docker Compose • Applications multi-conteneurs</p>
                               <div class="links">
                                   <a href="slides/jour4-registry-compose.html" class="btn">🖥️ Slides HTML</a>
-                                  <a href="pdf/jour4-registry-compose.pdf" class="btn btn-pdf">📄 PDF</a>
-                                  <a href="tp/tp4-compose-avance/README.md" class="btn btn-secondary">📝 TP4</a>
+                                  <a href="pdf/jour4-registry-compose.pdf" class="btn btn-pdf">📄 PDF Slides</a>
+                                  <a href="tp/tp4-compose-avance/README.md" class="btn btn-secondary">📝 TP4 Web</a>
+                                  <a href="tp-pdf/tp4-compose-avance.pdf" class="btn btn-pdf">📥 TP4 PDF</a>
                               </div>
                           </div>
                       </div>
@@ -291,8 +319,9 @@ jobs:
                               <p>Sécurité • Best practices • Projet fil rouge • QCM</p>
                               <div class="links">
                                   <a href="slides/jour5-production-projet.html" class="btn">🖥️ Slides HTML</a>
-                                  <a href="pdf/jour5-production-projet.pdf" class="btn btn-pdf">📄 PDF</a>
-                                  <a href="tp/tp5-projet-final/README.md" class="btn btn-secondary">📝 Projet Final</a>
+                                  <a href="pdf/jour5-production-projet.pdf" class="btn btn-pdf">📄 PDF Slides</a>
+                                  <a href="tp/tp5-projet-final/README.md" class="btn btn-secondary">📝 Projet Final Web</a>
+                                  <a href="tp-pdf/tp5-projet-final.pdf" class="btn btn-pdf">📥 Projet PDF</a>
                               </div>
                           </div>
                       </div>
