@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Docker Compose</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .status {
+            background: #f0f0f0;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        .articles {
+            margin-top: 2rem;
+        }
+        .article {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        .article h3 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .article p {
+            color: #666;
+            line-height: 1.6;
+        }
+        .article .meta {
+            font-size: 0.85rem;
+            color: #999;
+            margin-top: 0.5rem;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .btn:hover {
+            background: #5568d3;
+        }
+        .form {
+            background: #f0f0f0;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        .form input, .form textarea {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: #48bb78;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐳 Blog avec Docker Compose</h1>
+
+        <div class="status" id="status">
+            <p><strong>Status:</strong> Chargement...</p>
+        </div>
+
+        <div class="form">
+            <h2>Nouvel Article</h2>
+            <input type="text" id="title" placeholder="Titre de l'article">
+            <input type="text" id="author" placeholder="Auteur (optionnel)">
+            <textarea id="content" rows="4" placeholder="Contenu de l'article"></textarea>
+            <button class="btn" onclick="createArticle()">Publier</button>
+        </div>
+
+        <div class="articles">
+            <h2>Articles</h2>
+            <div id="articles-list">Chargement...</div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000';
+
+        // Check API health
+        async function checkHealth() {
+            try {
+                const response = await fetch(`${API_URL}/health`);
+                const data = await response.json();
+                document.getElementById('status').innerHTML = `
+                    <p><strong>API Status:</strong> ${data.status} <span class="badge">✓</span></p>
+                    <p><strong>Database:</strong> ${data.database}</p>
+                    <p><strong>Redis:</strong> ${data.redis}</p>
+                `;
+            } catch (err) {
+                document.getElementById('status').innerHTML = `
+                    <p><strong>API Status:</strong> ❌ Disconnected</p>
+                    <p style="color: red;">${err.message}</p>
+                `;
+            }
+        }
+
+        // Load articles
+        async function loadArticles() {
+            try {
+                const response = await fetch(`${API_URL}/articles`);
+                const data = await response.json();
+
+                const list = document.getElementById('articles-list');
+
+                if (data.articles.length === 0) {
+                    list.innerHTML = '<p>Aucun article pour le moment.</p>';
+                    return;
+                }
+
+                list.innerHTML = data.articles.map(article => `
+                    <div class="article">
+                        <h3>${article.title}</h3>
+                        <p>${article.content}</p>
+                        <div class="meta">
+                            Par ${article.author} - ${new Date(article.created_at).toLocaleString('fr-FR')}
+                            ${data.source === 'cache' ? '<span class="badge">Cache</span>' : '<span class="badge" style="background:#e53e3e">DB</span>'}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                document.getElementById('articles-list').innerHTML = `
+                    <p style="color: red;">Erreur: ${err.message}</p>
+                `;
+            }
+        }
+
+        // Create article
+        async function createArticle() {
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            const author = document.getElementById('author').value;
+
+            if (!title || !content) {
+                alert('Titre et contenu sont requis');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/articles`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ title, content, author })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create article');
+                }
+
+                // Clear form
+                document.getElementById('title').value = '';
+                document.getElementById('content').value = '';
+                document.getElementById('author').value = '';
+
+                // Reload articles
+                await loadArticles();
+            } catch (err) {
+                alert('Erreur: ' + err.message);
+            }
+        }
+
+        // Initialize
+        checkHealth();
+        loadArticles();
+
+        // Refresh every 30s
+        setInterval(loadArticles, 30000);
+    </script>
+</body>
+</html>
