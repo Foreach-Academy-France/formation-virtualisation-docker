@@ -938,31 +938,6 @@ docker exec postgres psql -U postgres -l
 
 ---
 
-## Volumes avec Docker Compose
-
-```yaml
-version: '3.8'
-
-services:
-  db:
-    image: postgres:15
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    environment:
-      POSTGRES_PASSWORD: secret
-
-volumes:
-  pgdata:
-    driver: local
-```
-
-```bash
-docker-compose up -d
-# → Volume créé automatiquement
-```
-
----
-
 ## Named volumes vs Anonymous volumes
 
 **Named volume** :
