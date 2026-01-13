@@ -17,11 +17,11 @@ Démonstration en direct des commandes de monitoring Docker et de la persistance
 # Web server
 docker run -d --name web -p 8080:80 nginx
 
-# API
-docker run -d --name api -p 3000:3000 \
-  -e PORT=3000 \
-  node:18-alpine \
-  sh -c "npm init -y && npm install express && node -e \"const express = require('express'); const app = express(); app.get('/', (req,res) => res.json({status:'ok'})); app.listen(3000, () => console.log('Ready'));\""
+# API (builder depuis simple-api/)
+cd simple-api/
+docker build -t simple-api .
+docker run -d --name api -p 3000:3000 simple-api
+cd ..
 
 # Database
 docker run -d --name db \
