@@ -68,6 +68,10 @@ style: |
     color: #d4d4d4;
     font-size: 15px;
   }
+  .mermaid {
+    transform: scale(0.75);
+    transform-origin: center;
+  }
 ---
 
 <!-- Mermaid support -->
