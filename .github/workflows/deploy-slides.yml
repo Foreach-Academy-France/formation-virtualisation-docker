@@ -239,12 +239,13 @@ jobs:
                   <header>
                       <div class="docker-icon">🐳</div>
                       <h1>Formation Virtualisation et Conteneurisation avec Docker</h1>
-                      <p class="subtitle">IEF2I / Digital School of Paris - M2 ESTD Architecte Web</p>
+                      <p class="subtitle">ForEach Academy - M2 ESTD Architecte Web</p>
                   </header>
 
                   <div class="info">
                       <p><strong>📅 Durée:</strong> 5 jours (35 heures)</p>
-                      <p><strong>👨‍🏫 Référent:</strong> Michael MAVRODIS</p>
+                      <p><strong>👨‍🏫 Formateur:</strong> Fabrice Claeys</p>
+                      <p><strong>📧 Contact:</strong> fabrice.claeys@groupe-bao.fr</p>
                       <p><strong>🎯 Objectif:</strong> Maîtriser Docker et la conteneurisation en environnement production</p>
                   </div>
 

@@ -2,7 +2,7 @@
 marp: true
 theme: uncover
 paginate: true
-footer: M2 ESTD - Virtualisation et Conteneurisation avec Docker | IEF2I
+footer: M2 ESTD - Virtualisation et Conteneurisation avec Docker | ForEach Academy
 style: |
   section {
     font-size: 20px;
@@ -83,7 +83,7 @@ style: |
 
 **Formation Virtualisation & Conteneurisation**
 M2 ESTD - Architecte Web
-IEF2I / Digital School of Paris
+ForEach Academy
 
 ---
 
@@ -1202,4 +1202,4 @@ FROM node:18-alpine
 **Formation Docker - Jour 2**
 M2 ESTD - Architecte Web
 
-📧 michaelmavrodis@formateur.ief2i.fr
+📧 fabrice.claeys@groupe-bao.fr
