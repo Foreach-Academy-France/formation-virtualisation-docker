@@ -449,25 +449,21 @@ networks:
 
 ## Architecture réseau sécurisée
 
-```
-Internet
-    │
-    ▼
-┌─────────┐
-│  Nginx  │ ← Seul point d'entrée (port 80/443)
-│ (proxy) │
-└────┬────┘
-     │ frontend network
-     ▼
-┌─────────┐
-│   API   │ ← Pas d'accès direct
-└────┬────┘
-     │ backend network (internal)
-     ▼
-┌─────────┐
-│   DB    │ ← Totalement isolée
-└─────────┘
-```
+<div class="mermaid">
+flowchart TB
+    Internet((Internet))
+    Internet --> Nginx
+    subgraph frontend["frontend network"]
+        Nginx["Nginx (proxy)<br/>:80/:443"]
+    end
+    Nginx --> API
+    subgraph backend["backend network (internal)"]
+        API["API"]
+        API --> DB["DB"]
+    end
+</div>
+
+**Règle** : Seul Nginx expose des ports • API et DB totalement isolées
 
 ---
 
