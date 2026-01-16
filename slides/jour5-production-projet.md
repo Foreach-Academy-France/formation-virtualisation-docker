@@ -148,20 +148,13 @@ ForEach Academy
 
 ## Les 4 piliers de la sécurité Docker
 
-```
-┌─────────────────────────────────────────┐
-│           Sécurité Docker               │
-├────────────┬────────────┬───────────────┤
-│  1. Images │ 2. Runtime │ 3. Réseau     │
-│            │            │               │
-│ - Sources  │ - Non-root │ - Isolation   │
-│ - Scanning │ - Readonly │ - Firewall    │
-│ - Updates  │ - Limits   │ - TLS         │
-├────────────┴────────────┴───────────────┤
-│           4. Host & Orchestration       │
-│     - Socket Docker - Secrets - RBAC    │
-└─────────────────────────────────────────┘
-```
+| 1. Images | 2. Runtime | 3. Réseau |
+|-----------|------------|-----------|
+| Sources fiables | Non-root | Isolation |
+| Scanning | Readonly | Firewall |
+| Updates | Limits | TLS |
+
+**4. Host & Orchestration** : Socket Docker • Secrets • RBAC
 
 ---
 
