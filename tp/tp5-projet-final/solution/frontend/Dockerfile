@@ -37,10 +37,10 @@ RUN mkdir -p /var/cache/nginx /var/run && \
     chown -R appuser:appgroup /var/cache/nginx /var/run /usr/share/nginx/html && \
     chmod -R 755 /var/cache/nginx /var/run
 
-# Modifier nginx.conf pour écouter sur un port non-privilégié
+# Modifier nginx.conf pour écouter sur un port non-privilégié et utiliser un PID accessible
 RUN sed -i 's/listen       80;/listen       8080;/g' /etc/nginx/conf.d/default.conf && \
     sed -i '/user  nginx;/d' /etc/nginx/nginx.conf && \
-    sed -i 's/pid        \/var\/run\/nginx.pid;/pid        \/tmp\/nginx.pid;/g' /etc/nginx/nginx.conf
+    sed -i 's|pid.*nginx.pid;|pid /tmp/nginx.pid;|g' /etc/nginx/nginx.conf
 
 # Exposer le port
 EXPOSE 8080

@@ -93,7 +93,7 @@ function App() {
             {products.map((product) => (
               <div key={product.id} className="product-card">
                 <h3>{product.name}</h3>
-                <p className="price">{product.price.toFixed(2)} EUR</p>
+                <p className="price">{parseFloat(product.price).toFixed(2)} EUR</p>
                 <p className="date">
                   Ajouté le {new Date(product.created_at).toLocaleDateString()}
                 </p>
