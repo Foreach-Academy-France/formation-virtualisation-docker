@@ -993,21 +993,19 @@ docker service ls
 
 ## Kubernetes : Concepts clés
 
-```
-┌─────────────────────────────────────────┐
-│              Cluster K8s                │
-├─────────────────────────────────────────┤
-│  ┌─────────────────────────────────┐   │
-│  │          Namespace              │   │
-│  │  ┌─────────┐  ┌─────────┐      │   │
-│  │  │Deployment│  │ Service │      │   │
-│  │  │  ┌───┐  │  │         │      │   │
-│  │  │  │Pod│  │  │         │      │   │
-│  │  │  └───┘  │  │         │      │   │
-│  │  └─────────┘  └─────────┘      │   │
-│  └─────────────────────────────────┘   │
-└─────────────────────────────────────────┘
-```
+<div class="mermaid">
+flowchart TB
+    subgraph cluster["Cluster K8s"]
+        subgraph ns["Namespace"]
+            subgraph deploy["Deployment"]
+                Pod["Pod"]
+            end
+            Service["Service"]
+        end
+    end
+</div>
+
+**Hiérarchie** : Cluster → Namespace → Deployment/Service → Pod
 
 ---
 
