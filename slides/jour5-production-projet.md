@@ -1108,31 +1108,26 @@ kompose convert
 
 ## Architecture cible
 
-```
-                Internet
-                    │
-                    ▼
-            ┌──────────────┐
-            │    Nginx     │ :80/:443
-            │   (proxy)    │
-            └──────┬───────┘
-                   │
-        ┌──────────┴──────────┐
-        │                     │
-        ▼                     ▼
-┌──────────────┐      ┌──────────────┐
-│   Frontend   │      │   Backend    │
-│   (React)    │      │   (API)      │
-└──────────────┘      └──────┬───────┘
-                             │
-                   ┌─────────┴─────────┐
-                   │                   │
-                   ▼                   ▼
-            ┌──────────┐        ┌──────────┐
-            │ Postgres │        │  Redis   │
-            │   (DB)   │        │ (Cache)  │
-            └──────────┘        └──────────┘
-```
+<div class="mermaid">
+flowchart TB
+    Internet((Internet))
+    Internet --> Nginx
+    subgraph proxy["Reverse Proxy"]
+        Nginx["Nginx<br/>:80/:443"]
+    end
+    Nginx --> Frontend
+    Nginx --> Backend
+    subgraph app["Application"]
+        Frontend["Frontend<br/>(React)"]
+        Backend["Backend<br/>(API)"]
+    end
+    Backend --> Postgres
+    Backend --> Redis
+    subgraph data["Data Layer"]
+        Postgres["Postgres<br/>(DB)"]
+        Redis["Redis<br/>(Cache)"]
+    end
+</div>
 
 ---
 
