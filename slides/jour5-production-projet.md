@@ -222,17 +222,14 @@ trivy config ./Dockerfile
 $ trivy image python:3.9
 
 python:3.9 (debian 11.6)
-========================
 Total: 1247 (UNKNOWN: 0, LOW: 823, MEDIUM: 318, HIGH: 94, CRITICAL: 12)
-
-┌──────────────┬──────────────────┬──────────┬─────────────────────┐
-│   Library    │  Vulnerability   │ Severity │   Fixed Version     │
-├──────────────┼──────────────────┼──────────┼─────────────────────┤
-│ openssl      │ CVE-2023-0286    │ CRITICAL │ 1.1.1n-0+deb11u4    │
-│ libxml2      │ CVE-2022-40303   │ HIGH     │ 2.9.10+dfsg-6.7+d.. │
-│ curl         │ CVE-2023-23914   │ HIGH     │ 7.74.0-1.3+deb11u5  │
-└──────────────┴──────────────────┴──────────┴─────────────────────┘
 ```
+
+| Library | Vulnerability | Severity | Fixed Version |
+|---------|---------------|----------|---------------|
+| openssl | CVE-2023-0286 | CRITICAL | 1.1.1n-0+deb11u4 |
+| libxml2 | CVE-2022-40303 | HIGH | 2.9.10+dfsg-6.7+d.. |
+| curl | CVE-2023-23914 | HIGH | 7.74.0-1.3+deb11u5 |
 
 **Action** : Mettre à jour ou changer d'image base
 
